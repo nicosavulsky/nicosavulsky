@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta Organizacional</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f5f5f5; /* Cambio de fondo */
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333; /* Color de texto */
+  }
+  form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1); /* Sombra */
+  }
+  label {
+    display: block;
+    margin-bottom: 10px;
+    color: #555; /* Color de texto */
+  }
+  input[type="text"],
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc; /* Borde */
+  }
+  button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  #results {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1); /* Sombra */
+  }
+  #results p {
+    margin-bottom: 10px;
+  }
+  #results a button {
+    background-color: #28a745; /* Color verde */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fff;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+<h1>Encuesta Organizacional</h1>
+<form id="surveyForm">
+  <label for="nombre">Nombre:</label>
+  <input type="text" id="nombre" required> <!-- Campo de nombre requerido -->
+
+  <label for="autonomia">¿Cómo describirías tu nivel de autonomía y responsabilidad en el trabajo?</label>
+  <select id="autonomia">
+    <option value="1">Muy limitado</option>
+    <option value="2">Limitado</option>
+    <option value="3">Moderado</option>
+    <option value="4">Alto</option>
+    <option value="5">Muy alto</option>
+  </select>
+
+  <label for="innovacion">¿Qué tan abierto es tu entorno laboral a la innovación y nuevas ideas?</label>
+  <select id="innovacion">
+    <option value="1">Muy cerrado</option>
+    <option value="2">Cerrado</option>
+    <option value="3">Moderado</option>
+    <option value="4">Abierto</option>
+    <option value="5">Muy abierto</option>
+  </select>
+
+  <label for="colaboracion">¿En tu empresa se fomenta la colaboración y la toma de decisiones compartida?</label>
+  <select id="colaboracion">
+    <option value="1">Nunca</option>
+    <option value="2">Raramente</option>
+    <option value="3">A veces</option>
+    <option value="4">Frecuentemente</option>
+    <option value="5">Siempre</option>
+  </select>
+
+  <label for="cultura">¿Cómo describirías la cultura organizacional en tu empresa?</label>
+  <select id="cultura">
+    <option value="1">Jerárquica y autoritaria</option>
+    <option value="2">Burocrática y controladora</option>
+    <option value="3">Orientada a resultados y competitiva</option>
+    <option value="4">Basada en el bienestar y desarrollo personal</option>
+    <option value="5">Inspirada en un propósito evolutivo</option>
+  </select>
+
+  <label for="flexibilidad">¿Qué tan flexible es la estructura de tu empresa para adaptarse a cambios rápidos?</label>
+  <select id="flexibilidad">
+    <option value="1">Muy rígida</option>
+    <option value="2">Rígida</option>
+    <option value="3">Moderadamente flexible</option>
+    <option value="4">Flexible</option>
+    <option value="5">Altamente flexible</option>
+  </select>
+
+  <!-- Agrega más preguntas aquí -->
+  <input type="hidden" name="timestamp" value="<?php echo time(); ?>">
+
+  <button type="submit" id="submitButton" disabled>Obtener Resultado</button> <!-- Botón deshabilitado por defecto -->
+  <form id="surveyForm" method="post" action="guardar_resultados.php">
+
+</form>
+
+<div id="results"></div>
+
+<script>
+const form = document.getElementById('surveyForm');
+const results = document.getElementById('results');
+
+// Obtenemos referencia al campo de nombre y al botón de submit
+const nombreInput = document.getElementById('nombre');
+const submitButton = document.getElementById('submitButton');
+
+// Añadimos un evento para habilitar el botón cuando el campo de nombre se complete
+nombreInput.addEventListener('input', function() {
+  if (nombreInput.value.trim() !== '') {
+    submitButton.disabled = false; // Habilitar el botón
+  } else {
+    submitButton.disabled = true; // Deshabilitar el botón
+  }
+});
+
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  const nombre = nombreInput.value.trim(); // Obtenemos el nombre ingresado
+  const autonomia = parseInt(document.getElementById('autonomia').value);
+  const innovacion = parseInt(document.getElementById('innovacion').value);
+  const colaboracion = parseInt(document.getElementById('colaboracion').value);
+  const cultura = parseInt(document.getElementById('cultura').value);
+  const flexibilidad = parseInt(document.getElementById('flexibilidad').value);
+
+  let organizationType = '';
+  let organizationDescription = '';
+  
+  // Criterios para determinar el tipo de organización
+  if (autonomia >= 4 && innovacion >= 4 && colaboracion >= 4 && cultura >= 4 && flexibilidad >= 4) {
+    organizationType = 'TEAL';
+    organizationDescription = 'Organización Teal: Basada en la autogestión y propósito evolutivo.';
+  } else if (autonomia >= 3 && innovacion >= 3 && colaboracion >= 3 && cultura >= 3 && flexibilidad >= 3) {
+    organizationType = 'Verde';
+    organizationDescription = 'Organización Verde: Centrada en el bienestar y desarrollo personal.';
+  } else if (autonomia >= 2 && innovacion >= 2 && colaboracion >= 2 && cultura >= 2 && flexibilidad >= 2) {
+    organizationType = 'Naranja';
+    organizationDescription = 'Organización Naranja: Orientada a resultados y competitiva.';
+  } else if (autonomia >= 1 && innovacion >= 1 && colaboracion >= 1 && cultura >= 1 && flexibilidad >= 1) {
+    organizationType = 'Rojo';
+    organizationDescription = 'Organización Rojo: Jerárquica y autoritaria.';
+  } else {
+    organizationType = 'Ámbar';
+    organizationDescription = 'Organización Ámbar: Burocrática y controladora.';
+  }
+  
+  // Mostramos el resultado junto con el nombre ingresado
+  results.innerHTML = `<p>${nombre}, tu organización se identifica como: <strong>${organizationType}</strong></p><p>${organizationDescription}</p><br><p>Gracias por participar.</p><p><strong>Te invito a conocer cómo llevar tu empresa al modelo Teal y mucho más.</strong></p><p>Contáctame: Nicolás Savulsky - Asesor de empresas</p><a href="https://api.whatsapp.com/send?phone=543455463110&text=Hola!%20Me%20gustar%C3%ADa%20que%20me%20contactes%20para%20coordinar%20una%20reuni%C3%B3n." target="_blank"><button>Conocer más</button></a>`;
+  
+});
+</script>
+<?php
+// Verificamos si se ha enviado el formulario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Obtenemos los datos del formulario
+    $nombre = $_POST['nombre'];
+    $autonomia = $_POST['autonomia'];
+    $innovacion = $_POST['innovacion'];
+    // Continúa obteniendo los datos de las otras preguntas
+
+    // Creamos una cadena con los datos del participante
+    $resultado = "$nombre,$autonomia,$innovacion"; // Añade más datos según sea necesario
+
+    // Escribimos los resultados en el archivo
+    $archivo = 'resultados.txt'; // Nombre del archivo de resultados
+    file_put_contents($archivo, $resultado . PHP_EOL, FILE_APPEND | LOCK_EX); // Guardamos los resultados en el archivo
+}
+?>
+</script>
+</body>
+</html>
+
